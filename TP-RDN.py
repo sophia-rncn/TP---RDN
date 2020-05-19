@@ -80,7 +80,7 @@ cols = ["dur", "proto", "service", "state", "spkts", "dpkts", "sbytes", "dbytes"
 "ct_dst_src_ltm", "is_ftp_login", "ct_ftp_cmd", "ct_flw_http_mthd",
 "ct_src_ltm", "ct_srv_dst", "is_sm_ips_ports"]
 
-# TODO 1: Identify variables' types
+# Identify variables' types
 def load_data(path, train=False):
     global cols
     df = pd.read_csv(path)[cols + ["attack_cat"]]
@@ -103,7 +103,7 @@ def load_data(path, train=False):
         elif key in ["trans_depth","is_ftp_login", "ct_ftp_cmd", "is_sm_ips_ports"]:
             inp[key] = df[key].values.astype(np.bool)
             
-        # Caegorical varaiables
+        # Caegorical variables
         elif key in ["proto", "service", "state"]:
             cat = CategoricalEncoder()
             inp[key]  = cat.fit_transform(df[key])
@@ -133,7 +133,7 @@ def create_training_model(variables):
     inputs = []
     tensors = []
 
-    # TODO 3.1: Define the encoding part specific to each input type
+    # Define the encoding part specific to each input type
     for key in variables:
         inp = None
         x = None
@@ -161,13 +161,13 @@ def create_training_model(variables):
     encoder = tf.keras.layers.Concatenate()(tensors)
     
     
-    # TODO 3.2: Define the central part of the autoencoder
+    # Define the central part of the autoencoder
     decoder = tf.keras.layers.Dense(1, activation=tf.nn.sigmoid)(encoder)
 
     losses = {}
     outputs = []
 
-    # TODO 3.3: Define the decoding part and loss specific to each input type
+    # Define the decoding part and loss specific to each input type
     for key in variables:
         loss = None
         x = None
@@ -232,7 +232,7 @@ def train_model(model, losses, data):
     return inf_model
 
 def find_threshold(normal_scores, anormal_scores):
-    # TODO 5: Finding threshold
+    # Finding threshold
     plt.scatter(normal_ids, normal_scores)
     plt.scatter(anormal_ids, anormal_scores)
     plt.xlim(2500)
@@ -252,4 +252,3 @@ anormal_ids = np.where(labels == 1)
 
 threshold = find_threshold(scores[normal_ids], scores[anormal_ids])
 
-# TODO 6: analyze "unknown.csv"
